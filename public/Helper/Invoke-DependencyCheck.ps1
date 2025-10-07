@@ -32,8 +32,11 @@ Function Get-AllModulesInstalled {
             ModuleName    = "Microsoft.Graph.Identity.SignIns"; 
             ModuleVersion = "1.28.0"; 
         }, @{
-            ModuleName    = "Microsoft.Graph.Devices.CorporateManagement"; 
-            ModuleVersion = "1.28.0"; 
+            ModuleName    = "Microsoft.Graph.Devices.CorporateManagement";
+            ModuleVersion = "1.28.0";
+        }, @{
+            ModuleName    = "ImportExcel";
+            ModuleVersion = "7.8.8";
         }
     )
 
