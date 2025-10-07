@@ -72,6 +72,7 @@ Alias: `aaddepl`
 ### General
 
 - Generates a HTML report to your desktop called `Microsoft365-Report-<customer_name>-<date_time>.html`
+- Generates an Excel workbook with the same dataset for further analysis
 - Interactive console interface
 - Create Desktop icon (Windows only)
 - Automatic update check
@@ -88,6 +89,11 @@ Alias: `aaddepl`
   - BlockMsolPowerShell: show, enable
 - Device join settings: show
 - Licenses: show
+- License inventory across tenants: show
+- User inventory with licensing details: show
+- Directory role members by assignment: show
+- Devices with join type and stale status: show
+- Entra ID groups with membership metadata: show
 - Admin role assignments: show
 - User mfa status: show
 - Guest accounts: show
@@ -105,11 +111,16 @@ Alias: `aaddepl`
   - Sharing capability: show
   - Prevent external users from resharing: show
   - Default sharing link type: show
+- SharePoint and OneDrive site inventory with storage insights
 
 ### Exchange Online
 
 - Domains: show, check DKIM/DMARC/SPF
+- Domain inventory with DNS ownership insights: show
 - Mail connector: show
+- All recipients: show with metadata across detail levels
+- Group membership and configuration details
+- Public folders and permissions overview
 - User mailbox: show, set language
 - Shared mailbox: show, set language, disable login, enable copy to sent
 - Unified mailbox: show, hide from client

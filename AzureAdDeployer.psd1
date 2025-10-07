@@ -124,7 +124,8 @@
                 "Microsoft.Graph.Identity.DirectoryManagement",
                 "Microsoft.Graph.DeviceManagement.Enrolment",
                 "Microsoft.Graph.Identity.SignIns",
-                "Microsoft.Graph.Devices.CorporateManagement"
+                "Microsoft.Graph.Devices.CorporateManagement",
+                "ImportExcel"
             )
 
         } # End of PSData hashtable

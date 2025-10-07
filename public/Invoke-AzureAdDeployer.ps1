@@ -42,6 +42,8 @@ function Invoke-AzureAdDeployer {
 
     $script:ReportImageUrl = $script:ModuleInfos.PrivateData.PSData.IconUri
 
+    Initialize-TenantReportContext -Title $script:ReportTitle -Version $script:ModuleVersion
+
     $script:InteractiveMode = $false
     $script:MailboxLanguageCode = "de-CH"
     $script:MailboxTimeZone = "W. Europe Standard Time"
@@ -132,6 +134,11 @@ function Invoke-AzureAdDeployer {
     $Report += Get-UserSettingsReport -DisableUserConsent $script:DisableEnterpiseApplicationUserConsent -DisableUsersToCreateAppRegistrations $script:DisableUsersToCreateAppRegistrations -DisableUsersToReadOtherUsers $script:DisableUsersToReadOtherUsers -DisableUsersToCreateSecurityGroups $script:DisableUsersToCreateSecurityGroups -DisableUsersToCreateUnifiedGroups $script:DisableUsersToCreateUnifiedGroups -CreateUnifiedGroupCreationAllowedGroup $script:CreateUnifiedGroupCreationAllowedGroup -EnableBlockMsolPowerShell $script:EnableBlockMsolPowerShell
     $Report += Get-DeviceJoinSettingsReport
     $Report += Get-UsedSKUReport
+    $Report += Get-AllLicenseSKUs -ServiceName 'MGGraph'
+    $Report += Get-AllUserDetails -DetailLevel 'combined' -ServiceName 'MGGraph'
+    $Report += Get-AllOffice365Admins -ServiceName 'MGGraph'
+    $Report += Get-AllDevicesReport -DetailLevel 'combined' -ServiceName 'MGGraph'
+    $Report += Get-EntraIDGroups -DetailLevel 'combined' -ServiceName 'MGGraph' -GraphAuthType 'SDK'
     $Report += Get-AdminRoleReport
     $Report += Get-BreakGlassAccountReport -Create $script:CreateBreakGlassAccount
     $Report += Get-UserMfaStatusReport
@@ -145,12 +152,17 @@ function Invoke-AzureAdDeployer {
         $Report += "<br><hr><h2 id='SPO'>SharePoint Online</h2>"
         Write-Host "SharePoint Online"
         $Report += Get-SPOTenantReport -DisableAddToOneDrive $script:DisableAddToOneDrive
+        $Report += Get-SharePointAndOneDriveSites -DetailLevel 'combined' -ServiceName 'SPO'
     }
     if ($script:AddExchangeOnlineReport -or $script:SetMailboxLanguage -or $script:DisableSharedMailboxLogin -or $script:EnableSharedMailboxCopyToSent -or $script:HideUnifiedMailboxFromOutlookClient) {
         $Report += "<br><hr><h2 id='EXO'>Exchange Online</h2>"
         Write-Host "Exchange Online"
         $Report += Get-MailDomainReport
+        $Report += Get-AllOffice365Domains -ServiceName 'MGGraph'
         $Report += Get-MailConnectorReport
+        $Report += Get-AllRecipientDetails -DetailLevel 'combined'
+        $Report += Get-ExchangeGroupDetails -DetailLevel 'combined'
+        $Report += Get-AllPublicFolderDetails -DetailLevel 'combined' -ExchangeEnvironment 'Office365'
         # $Report += Get-UserMailboxReport -Language $script:SetMailboxLanguage
         $Report += Get-SharedMailboxReport -Language $script:SetMailboxLanguage -DisableLogin $script:DisableSharedMailboxLogin -EnableCopy $script:EnableSharedMailboxCopyToSent
         $Report += Get-UnifiedMailboxReport -HideFromClient $script:HideUnifiedMailboxFromOutlookClient
@@ -183,6 +195,10 @@ function Invoke-AzureAdDeployer {
     $Report = ConvertTo-Html -Body "$ReportTitleHtml $Report" -Title $ReportTitle -Head (Get-Header) -PostContent $PostContentHtml
     $Report | Out-File $Desktop\$ReportName -Force
     Invoke-Item $Desktop\$ReportName
+
+    $ExcelName = ("Microsoft365-Report-$($script:CustomerName)-$(Get-Date -Date $Date -Format 'yyyyMMddHHmm').xlsx").Replace(" ", "")
+    Write-Host "Generating Excel report:" $ExcelName
+    Export-TenantReportExcel -Path (Join-Path $Desktop $ExcelName)
     if ($script:InteractiveMode) { Read-Host "Click [ENTER] to exit $script:ModuleName" }
 }
 Set-Alias aaddepl -Value Invoke-AzureAdDeployer
